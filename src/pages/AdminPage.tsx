@@ -39,9 +39,9 @@ export default function AdminPage() {
             ]);
             setProducts(prods);
             setCategories(cats);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert('Error al cargar datos');
+            alert(`Error al cargar datos: ${error.message || 'Revisa la consola'}`);
         } finally {
             setLoading(false);
         }
@@ -85,9 +85,9 @@ export default function AdminPage() {
             await api.createCategory({ name: newCategoryName });
             setNewCategoryName('');
             loadData();
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert('Error al crear categoría');
+            alert(`Error al crear categoría: ${error.message || 'Error desconocido'}`);
         }
     };
 
