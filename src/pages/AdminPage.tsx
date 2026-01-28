@@ -61,24 +61,49 @@ export default function AdminPage() {
         }
     };
 
+    const startEditing = (product: Product) => {
+        setEditingProduct(product);
+        setNewProduct({
+            name: product.name,
+            description: '', // API/Type might not fully support this yet, keep empty or modify logic
+            price: product.price.toString(),
+            stock: product.stock.toString(),
+            category_id: product.category_id.toString(),
+            image_url: product.image_url || ''
+        });
+        setIsCreatingProduct(true);
+    };
+
+    const cancelEditing = () => {
+        setEditingProduct(null);
+        setNewProduct({ name: '', description: '', price: '', stock: '', category_id: '', image_url: '' });
+        setIsCreatingProduct(false);
+    };
+
     const handleCreateProduct = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.createProduct({
+            const productData = {
                 name: newProduct.name,
                 price: Number(newProduct.price),
                 stock: Number(newProduct.stock),
                 category_id: Number(newProduct.category_id),
                 image_url: newProduct.image_url,
-                // description: newProduct.description, // API needs update for description if it supports it? check types.
-            });
-            alert('Producto creado');
-            setIsCreatingProduct(false);
-            setNewProduct({ name: '', description: '', price: '', stock: '', category_id: '', image_url: '' });
+            };
+
+            if (editingProduct) {
+                await api.updateProduct(editingProduct.id_key, productData);
+                alert('Producto actualizado');
+            } else {
+                await api.createProduct(productData);
+                alert('Producto creado');
+            }
+
+            cancelEditing();
             loadData();
         } catch (error) {
             console.error(error);
-            alert('Error al crear producto');
+            alert('Error al guardar producto');
         }
     };
 
@@ -93,6 +118,7 @@ export default function AdminPage() {
         }
     };
 
+    // ... existing category handlers ...
     const handleCreateCategory = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -120,6 +146,7 @@ export default function AdminPage() {
 
     return (
         <div className="container mx-auto p-4">
+            {/* Headers ... */}
             <div className="bg-gray-900 text-white p-6 rounded-t-lg border-b-4 border-orange-600 mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black uppercase tracking-tighter flex items-center gap-3">
@@ -149,16 +176,23 @@ export default function AdminPage() {
                     {/* Create Product Button */}
                     {!isCreatingProduct ? (
                         <button
-                            onClick={() => setIsCreatingProduct(true)}
+                            onClick={() => {
+                                setEditingProduct(null);
+                                setNewProduct({ name: '', description: '', price: '', stock: '', category_id: '', image_url: '' });
+                                setIsCreatingProduct(true);
+                            }}
                             className="bg-orange-600 text-white font-bold uppercase px-6 py-3 flex items-center gap-2 hover:bg-orange-700 transition-colors shadow-lg"
                         >
                             <Plus /> Agregar Nuevo Producto
                         </button>
                     ) : (
                         <div className="bg-white border-2 border-orange-200 p-6 shadow-xl relative">
-                            <button onClick={() => setIsCreatingProduct(false)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><X /></button>
-                            <h3 className="text-xl font-black uppercase text-gray-800 mb-4 border-b pb-2">Nuevo Producto</h3>
+                            <button onClick={cancelEditing} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><X /></button>
+                            <h3 className="text-xl font-black uppercase text-gray-800 mb-4 border-b pb-2">
+                                {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
+                            </h3>
                             <form onSubmit={handleCreateProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Form Inputs remain mostly the same, ensuring value binding */}
                                 <div>
                                     <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Nombre</label>
                                     <input className="w-full p-2 border-2 border-gray-300 bg-gray-50 focus:border-orange-500 outline-none font-bold" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} required />
@@ -183,8 +217,6 @@ export default function AdminPage() {
                                                 if (!file) return;
 
                                                 try {
-                                                    const text = e.target.previousElementSibling?.textContent; // Hack to show status if needed, or better use state
-                                                    // Simple upload logic inline
                                                     const res = await api.uploadImage(file);
                                                     setNewProduct({ ...newProduct, image_url: res.url });
                                                     alert("Imagen subida correctamente");
@@ -200,7 +232,7 @@ export default function AdminPage() {
                                             </div>
                                         )}
                                     </div>
-                                    <input type="hidden" value={newProduct.image_url} /> {/* Hidden input to store URL */}
+                                    <input type="hidden" value={newProduct.image_url} />
                                 </div>
                                 <div className="md:col-span-2">
                                     <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Categoría</label>
@@ -209,8 +241,11 @@ export default function AdminPage() {
                                         {categories.map(c => <option key={c.id_key} value={c.id_key}>{c.name}</option>)}
                                     </select>
                                 </div>
-                                <div className="md:col-span-2">
-                                    <button type="submit" className="w-full bg-gray-900 text-white font-black uppercase py-3 hover:bg-orange-600 transition-colors">Guardar Producto</button>
+                                <div className="md:col-span-2 flex gap-2">
+                                    <button type="button" onClick={cancelEditing} className="flex-1 bg-gray-200 text-gray-800 font-bold uppercase py-3 hover:bg-gray-300 transition-colors">Cancelar</button>
+                                    <button type="submit" className="flex-1 bg-gray-900 text-white font-black uppercase py-3 hover:bg-orange-600 transition-colors">
+                                        {editingProduct ? 'Actualizar Producto' : 'Guardar Producto'}
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -230,8 +265,7 @@ export default function AdminPage() {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    {/* Edit not implemented fully yet, showing placeholder button */}
-                                    {/* <button className="p-2 text-blue-600 hover:bg-blue-50 rounded"><Edit size={18} /></button> */}
+                                    <button onClick={() => startEditing(p)} className="p-2 text-blue-600 hover:bg-blue-50 rounded"><Edit size={18} /></button>
                                     <button onClick={() => handleDeleteProduct(p.id_key)} className="p-2 text-red-600 hover:bg-red-50 rounded"><Trash2 size={18} /></button>
                                 </div>
                             </div>
