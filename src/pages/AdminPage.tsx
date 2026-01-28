@@ -158,8 +158,35 @@ export default function AdminPage() {
                                     <input type="number" className="w-full p-2 border-2 border-gray-300 bg-gray-50 focus:border-orange-500 outline-none font-bold" value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} required />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Imagen URL</label>
-                                    <input type="url" className="w-full p-2 border-2 border-gray-300 bg-gray-50 focus:border-orange-500 outline-none font-bold" value={newProduct.image_url} onChange={e => setNewProduct({ ...newProduct, image_url: e.target.value })} placeholder="https://..." />
+                                    <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Imagen del Producto</label>
+                                    <div className="flex gap-2 items-center">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full p-2 border-2 border-gray-300 bg-gray-50 focus:border-orange-500 outline-none font-bold text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+
+                                                try {
+                                                    const text = e.target.previousElementSibling?.textContent; // Hack to show status if needed, or better use state
+                                                    // Simple upload logic inline
+                                                    const res = await api.uploadImage(file);
+                                                    setNewProduct({ ...newProduct, image_url: res.url });
+                                                    alert("Imagen subida correctamente");
+                                                } catch (err) {
+                                                    console.error(err);
+                                                    alert("Error subiendo imagen");
+                                                }
+                                            }}
+                                        />
+                                        {newProduct.image_url && (
+                                            <div className="w-12 h-12 border border-gray-300 overflow-hidden shrink-0">
+                                                <img src={newProduct.image_url} alt="Preview" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <input type="hidden" value={newProduct.image_url} /> {/* Hidden input to store URL */}
                                 </div>
                                 <div className="md:col-span-2">
                                     <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Categoría</label>

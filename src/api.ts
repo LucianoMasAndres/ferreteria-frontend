@@ -10,6 +10,10 @@ class ApiService {
             ...options?.headers,
         };
 
+        if (options?.body instanceof FormData) {
+            delete headers['Content-Type'];
+        }
+
         const response = await fetch(url, { ...options, headers });
 
         if (!response.ok) {
@@ -22,6 +26,15 @@ class ApiService {
         }
 
         return response.json();
+    }
+
+    async uploadImage(file: File): Promise<{ url: string }> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.request<{ url: string }>('/uploads/upload/image', {
+            method: 'POST',
+            body: formData,
+        });
     }
 
     // Products
