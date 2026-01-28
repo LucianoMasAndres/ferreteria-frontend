@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Base Styles */
+body {
+  @apply bg-gray-50 text-gray-900 font-sans;
+}
+
+/* Industrial Custom Utilities */
+.industrial-gradient {
+  background: linear-gradient(135deg, theme('colors.gray.900') 0%, theme('colors.gray.800') 100%);
+}
+
+.orange-accent {
+  @apply text-orange-600;
+}

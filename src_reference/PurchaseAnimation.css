@@ -1,0 +1,13 @@
+/* src/PurchaseAnimation.css */
+@keyframes truckMove {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(calc(100% - 100px)); /* Adjusted for 100px truck width */
+  }
+}
+
+.truck-animation {
+  animation: truckMove 3s linear forwards;
+}
