@@ -60,14 +60,15 @@ const Navbar = ({ onCartClick }: NavbarProps) => {
                                         Admin
                                     </Link>
                                 )}
-                                <div className="flex flex-col items-end leading-tight">
-                                    <span className="text-gray-500 text-[10px] font-bold uppercase">Hola, {user.name}</span>
-                                    <Link to="/profile" className="text-white hover:text-orange-500 font-black uppercase text-sm flex items-center gap-1">
-                                        <User size={14} /> Mi Perfil
-                                    </Link>
+                                <div className="hidden md:block text-right leading-tight mr-2">
+                                    <div className="text-[10px] font-bold text-gray-500 uppercase">Bienvenido</div>
+                                    <div className="text-xs font-black text-white uppercase">{user.name}</div>
                                 </div>
-                                <div className="h-8 w-px bg-gray-700 mx-2"></div>
-                                <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 text-xs font-bold uppercase transition-colors">Salir</button>
+                                <Link to="/profile" className="bg-orange-600 text-white px-4 py-2 rounded-sm font-black uppercase text-xs tracking-wider hover:bg-white hover:text-orange-600 border-2 border-orange-600 transition-colors flex items-center gap-2 shadow-md">
+                                    <User size={16} />
+                                    Mi Perfil
+                                </Link>
+                                <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 text-xs font-bold uppercase transition-colors ml-2">Salir</button>
                             </div>
                         ) : (
                             <Link to="/login" className="flex items-center gap-2 hover:text-orange-500 transition-colors">
