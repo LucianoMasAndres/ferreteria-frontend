@@ -55,14 +55,19 @@ const Navbar = ({ onCartClick }: NavbarProps) => {
 
                         {isAuthenticated && user ? (
                             <div className="flex items-center gap-4">
-                                <Link to="/admin" className="text-orange-500 font-black uppercase text-xs hover:text-orange-400 border border-orange-500 px-2 py-1">
-                                    Admin
-                                </Link>
+                                {user.isAdmin && (
+                                    <Link to="/admin" className="text-orange-500 font-black uppercase text-xs hover:text-orange-400 border border-orange-500 px-2 py-1">
+                                        Admin
+                                    </Link>
                                 )}
-                                <Link to="/profile" className="text-gray-300 hover:text-white font-mono text-sm hover:underline">
-                                    Hola, {user.name}
-                                </Link>
-                                <button onClick={handleLogout} className="hover:text-red-500 transition-colors">Salir</button>
+                                <div className="flex flex-col items-end leading-tight">
+                                    <span className="text-gray-500 text-[10px] font-bold uppercase">Hola, {user.name}</span>
+                                    <Link to="/profile" className="text-white hover:text-orange-500 font-black uppercase text-sm flex items-center gap-1">
+                                        <User size={14} /> Mi Perfil
+                                    </Link>
+                                </div>
+                                <div className="h-8 w-px bg-gray-700 mx-2"></div>
+                                <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 text-xs font-bold uppercase transition-colors">Salir</button>
                             </div>
                         ) : (
                             <Link to="/login" className="flex items-center gap-2 hover:text-orange-500 transition-colors">
