@@ -25,7 +25,7 @@ export function Cart({ isOpen, onClose, items, onUpdateQuantity, onRemove, onChe
     const navigate = useNavigate();
 
     const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    const shipping = subtotal > 100000 ? 0 : 5000; // Example values
+    const shipping = 0; // Free shipping for now
     const total = subtotal + shipping;
 
     const handleCheckout = async () => {

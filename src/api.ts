@@ -105,6 +105,10 @@ class ApiService {
         });
     }
 
+    async getOrdersByClient(clientId: number): Promise<Order[]> {
+        return this.request<Order[]>(`/orders/client/${clientId}`);
+    }
+
     async createOrderDetail(detail: OrderDetailCreate): Promise<OrderDetail> {
         return this.request<OrderDetail>('/order_details/', {
             method: 'POST',
