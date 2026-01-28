@@ -60,15 +60,17 @@ const Navbar = ({ onCartClick }: NavbarProps) => {
                                         Admin
                                     </Link>
                                 )}
-                                <div className="hidden md:block text-right leading-tight mr-2">
-                                    <div className="text-[10px] font-bold text-gray-500 uppercase">Bienvenido</div>
-                                    <div className="text-xs font-black text-white uppercase">{user.name}</div>
-                                </div>
-                                <Link to="/profile" className="bg-orange-600 text-white px-4 py-2 rounded-sm font-black uppercase text-xs tracking-wider hover:bg-white hover:text-orange-600 border-2 border-orange-600 transition-colors flex items-center gap-2 shadow-md">
-                                    <User size={16} />
+
+                                <span className="text-gray-300 font-mono text-sm uppercase">
+                                    Hola, <span className="text-white font-bold">{user.name}</span>
+                                </span>
+
+                                <Link to="/profile" className="bg-orange-600 text-white px-3 py-1 rounded-sm font-black uppercase text-xs hover:bg-orange-500 transition-colors flex items-center gap-2">
+                                    <User size={14} />
                                     Mi Perfil
                                 </Link>
-                                <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 text-xs font-bold uppercase transition-colors ml-2">Salir</button>
+
+                                <button onClick={handleLogout} className="text-gray-400 hover:text-red-500 text-xs font-bold uppercase transition-colors">Salir</button>
                             </div>
                         ) : (
                             <Link to="/login" className="flex items-center gap-2 hover:text-orange-500 transition-colors">
