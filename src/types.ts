@@ -10,6 +10,7 @@ export interface Product {
     price: number;
     stock: number;
     category_id: number;
+    image_url?: string;
     category?: Category;
     reviews?: Review[];
     order_details?: OrderDetail[];

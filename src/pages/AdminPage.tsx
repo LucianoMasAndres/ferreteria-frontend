@@ -41,7 +41,21 @@ export default function AdminPage() {
             setCategories(cats);
         } catch (error: any) {
             console.error(error);
-            alert(`Error al cargar datos: ${error.message || 'Revisa la consola'}`);
+            let errorMessage = error.message || 'Error desconocido';
+
+            // Smart Diagnosis for NetworkErrors
+            if (errorMessage.includes('NetworkError') || errorMessage.includes('Failed to fetch')) {
+                errorMessage = `CRITICAL SERVER ERROR: The backend is unreachable or crashing.
+                
+                Possible causes:
+                1. Backend crashed (Check Render Logs)
+                2. CORS Headers missing on Error Response (Common during 500 Errors)
+                3. Database connection failed
+                
+                SOLUTION: Ensure you have pushed the latest 'serialization fix' to the backend.`;
+            }
+
+            alert(errorMessage);
         } finally {
             setLoading(false);
         }
